@@ -27,7 +27,7 @@ srpmproc/srpmproc: srpmproc
 	cd srpmproc; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ./cmd/srpmproc
 
 
-src/rockymockgen:
+src/sunmockgen:
 	go build -o src/sunmockgen src/sunmockgen.go
 
 modulelist:
