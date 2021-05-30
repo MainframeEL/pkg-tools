@@ -4,13 +4,13 @@ set -e
 
 ARCH=`uname -m`
 
-NAME=`pwd | sed -e "s@^$HOME/rocky/_work/@@" | awk -F '/' '{print $1}'`
-BRANCH=`pwd | sed -e "s@^$HOME/rocky/_work/@@" | awk -F '/' '{print $2}'`
+NAME=`pwd | sed -e "s@^$HOME/sun/_work/@@" | awk -F '/' '{print $1}'`
+BRANCH=`pwd | sed -e "s@^$HOME/sun/_work/@@" | awk -F '/' '{print $2}'`
 
 PATCHNAME="$1"
 
 if [ -z "$NAME" -o -z "$BRANCH" ]; then
-    echo "Directory structure doesn't seem to be a Rocky _workdir"
+    echo "Directory structure doesn't seem to be a Sun _workdir"
 fi
 
 if [ -z "$PATCHNAME" ]; then
@@ -20,42 +20,42 @@ else
     shift
 fi
 
-if [ ! -d "${HOME}/rocky/rpms/${NAME}" ]; then
+if [ ! -d "${HOME}/sun/rpms/${NAME}" ]; then
     echo "ERROR: Package name not found: ${NAME}"
     exit 255
 fi
 
-if [ ! -d "${HOME}/rocky/rpms/${NAME}/${BRANCH}" ]; then
+if [ ! -d "${HOME}/sun/rpms/${NAME}/${BRANCH}" ]; then
     echo "ERROR: Package branch not found: ${NAME}/${BRANCH}"
     exit 255
 fi
 
 
-test -d "${HOME}/rocky/_work/${NAME}/${BRANCH}/.patchdir" && rm -rf "${HOME}/rocky/_work/${NAME}/${BRANCH}/.patchdir"
-mkdir -p "${HOME}/rocky/_work/${NAME}/${BRANCH}/.patchdir"
+test -d "${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir" && rm -rf "${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir"
+mkdir -p "${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir"
 
-if [ ! -d "$HOME/rocky/patch/${NAME}.git/ROCKY/CFG" ]; then
-    mkdir -p "$HOME/rocky/patch/${NAME}.git/ROCKY/CFG"
-    mkdir -p "$HOME/rocky/patch/${NAME}.git/ROCKY/_supporting"
-    ( cd "$HOME/rocky/patch/${NAME}.git" && git init && git checkout -b main )
+if [ ! -d "$HOME/sun/patch/${NAME}.git/SUN/CFG" ]; then
+    mkdir -p "$HOME/sun/patch/${NAME}.git/SUN/CFG"
+    mkdir -p "$HOME/sun/patch/${NAME}.git/SUN/_supporting"
+    ( cd "$HOME/sun/patch/${NAME}.git" && git init && git checkout -b main )
 fi
 
-rpmbuild -bp --nodeps --define "%_topdir ${HOME}/rocky/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/rocky/_work/${NAME}/${BRANCH}/.patchdir" --define "dist .el8" ${HOME}/rocky/rpms/${NAME}/${BRANCH}/SPECS/*.spec
+rpmbuild -bp --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir" --define "dist .el8" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
 
-cd "${HOME}/rocky/_work/${NAME}/${BRANCH}/.patchdir"
+cd "${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir"
 
 mv * a
-ln -s ${HOME}/rocky/_work/${NAME}/${BRANCH}/* b
+ln -s ${HOME}/sun/_work/${NAME}/${BRANCH}/* b
 
 set +e
 
-diff -ru a b > "$HOME/rocky/patch/${NAME}.git/ROCKY/_supporting/$PATCHNAME"
+diff -ru a b > "$HOME/sun/patch/${NAME}.git/SUN/_supporting/$PATCHNAME"
 if [ $? -gt "1" ]; then
     echo "ERROR: Diff failed"
     exit 255
 fi
 
-cat <<EOF >> "$HOME/rocky/patch/${NAME}.git/ROCKY/CFG/$NAME.cfg"
+cat <<EOF >> "$HOME/sun/patch/${NAME}.git/SUN/CFG/$NAME.cfg"
 add {
     file: "ROCKY/_supporting/$PATCHNAME"
 }
@@ -72,7 +72,7 @@ spec_change {
 }
 EOF
 
-( cd "${HOME}/rocky/patch/${NAME}.git"; git add .; git commit -m "Add patch: $PATCHNAME" ) ||:
+( cd "${HOME}/sun/patch/${NAME}.git"; git add .; git commit -m "Add patch: $PATCHNAME" ) ||:
 
 cd ..
 rm -rf ".patchdir"
