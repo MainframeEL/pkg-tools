@@ -1,6 +1,6 @@
 .PHONY: all
 
-all: .go-setup src/rockymockgen srpmproc/srpmproc modulelist
+all: .go-setup src/sunmockgen srpmproc/srpmproc modulelist
 
 .dnf:
 	sudo dnf -y install epel-release
@@ -20,7 +20,7 @@ all: .go-setup src/rockymockgen srpmproc/srpmproc modulelist
 	
 
 srpmproc:
-	git clone https://github.com/rocky-linux/srpmproc.git
+	git clone https://github.com/SunOS-Linux/srpmproc.git
 
 
 srpmproc/srpmproc: srpmproc
@@ -28,25 +28,25 @@ srpmproc/srpmproc: srpmproc
 
 
 src/rockymockgen:
-	go build -o src/rockymockgen src/rockymockgen.go
+	go build -o src/sunmockgen src/sunmockgen.go
 
 modulelist:
-	for i in modulefiles/*; do echo "Building list of modular packages: $$i"; go run src/rockyrpmmodules.go < $$i >> modulelist; done
+	for i in modulefiles/*; do echo "Building list of modular packages: $$i"; go run src/sunrpmmodules.go < $$i >> modulelist; done
 
-install: srpmproc/srpmproc src/rockymockgen modulelist .dnf .system
-	mkdir -p /etc/rocky/devtools
-	cp -r etc_mock/rocky* /etc/mock/
-	cp -r modulefiles /etc/rocky/devtools/
-	install -m 755 src/rockymockgen /usr/local/bin/
+install: srpmproc/srpmproc src/sunmockgen modulelist .dnf .system
+	mkdir -p /etc/sun/devtools
+	cp -r etc_mock/sunos* /etc/mock/
+	cp -r modulefiles /etc/sun/devtools/
+	install -m 755 src/sunmockgen /usr/local/bin/
 	install -m 755 srpmproc/srpmproc /usr/local/bin/
 	install -m 755 bin/* /usr/local/bin/
-	install -m 644 modulelist /etc/rocky/devtools/
+	install -m 644 modulelist /etc/sun/devtools/
 	test -d /usr/share/nginx/html/repo || mkdir /usr/share/nginx/html/repo
 	chmod 777 /usr/share/nginx/html/repo
 
 
 clean:
-	rm -rf srpmproc modulelist src/rockymockgen
+	rm -rf srpmproc modulelist src/sunmockgen
 
 # enable makefile to accept argument after command
 #https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
@@ -75,8 +75,8 @@ help:
 	@echo ""
 
 build:
-	(mkdir -p $(HOME)/rocky && cd $(HOME)/rocky && rockyget $(filter-out $@,$(MAKECMDGOALS)))
-	(cd $(HOME)/rocky/$(filter-out $@,$(MAKECMDGOALS))/r8 && rockybuild-notest)
+	(mkdir -p $(HOME)/sun && cd $(HOME)/sun && sunget $(filter-out $@,$(MAKECMDGOALS)))
+	(cd $(HOME)/sun/$(filter-out $@,$(MAKECMDGOALS))/r8 && sunbuild-notest)
 
 
 
