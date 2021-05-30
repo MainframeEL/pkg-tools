@@ -1,0 +1,30 @@
+#!/bin/sh
+
+NAME="$1"
+
+set -e
+
+if [ -z "${NAME}" ]; then
+    echo "usage: rockyget NAME"
+    exit 1
+fi
+
+if [[ "${NAME}" =~ ^rocky- ]]; then
+    AARGS='--import-branch-prefix=r --rpm-prefix=https://git.rockylinux.org/original/rpms'
+fi
+
+if [ -d "${HOME}/sun/patch/${NAME}.git" ]; then
+    echo "NOTICE: Will merge local configs into pulled package"
+    ( cd "${HOME}/sun/patch/${NAME}.git"; git add .; git commit -m "update" ) ||:
+fi
+
+test -d "$HOME/sun/rpms/${NAME}" && rm -rf "$HOME/sun/rpms/${NAME}"
+test -d /tmp/srpmproc-cache || mkdir /tmp/srpmproc-cache
+mkdir -p "$HOME/sun/rpms/${NAME}"
+
+srpmproc --version 8 --upstream-prefix "file://$HOME/sun" --storage-addr file:///tmp/srpmproc-cache --source-rpm "$NAME" --tmpfs-mode "$HOME/sun/rpms/${NAME}" ${AARGS}
+
+echo "Package has been pulled to: $HOME/sun/rpms/${NAME}"
+echo
+echo "The following branches are available:"
+( cd $HOME/sun/rpms/${NAME}; ls -1 )
