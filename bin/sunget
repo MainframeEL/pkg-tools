@@ -10,7 +10,7 @@ if [ -z "${NAME}" ]; then
 fi
 
 if [[ "${NAME}" =~ ^rocky- ]]; then
-    AARGS='--import-branch-prefix=r --rpm-prefix=https://git.rockylinux.org/original/rpms'
+    AARGS='--import-branch-prefix=r --rpm-prefix=https://gitlab.com/morales-research-corporation/sunos-linux/rpms'
 fi
 
 if [ -d "${HOME}/sun/patch/${NAME}.git" ]; then
