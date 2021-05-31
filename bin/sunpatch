@@ -40,7 +40,7 @@ if [ ! -d "$HOME/sun/patch/${NAME}.git/SUN/CFG" ]; then
     ( cd "$HOME/sun/patch/${NAME}.git" && git init && git checkout -b main )
 fi
 
-rpmbuild -bp --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir" --define "dist .el8" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
+rpmbuild -bp --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir" --define "dist .el8.sol" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
 
 cd "${HOME}/sun/_work/${NAME}/${BRANCH}/.patchdir"
 
