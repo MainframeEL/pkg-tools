@@ -14,7 +14,7 @@ else
 fi
 
 if [ -z "$BRANCH" ]; then
-    BRANCH="r8"
+    BRANCH="s8"
 else
     shift
 fi
@@ -40,7 +40,7 @@ if [ ! -d "$HOME/sun/patch/${NAME}.git/SUN/CFG" ]; then
 fi
 
 
-rpmbuild -bp --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/sun/_work/${NAME}/${BRANCH}" --define "dist .el8" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
+rpmbuild -bp --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "_builddir ${HOME}/sun/_work/${NAME}/${BRANCH}" --define "dist .el8.sol" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
 
 echo "Created ${HOME}/sun/_work/${NAME}/${BRANCH}/"
 
