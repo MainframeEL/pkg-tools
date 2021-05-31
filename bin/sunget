@@ -9,7 +9,7 @@ if [ -z "${NAME}" ]; then
     exit 1
 fi
 
-if [[ "${NAME}" =~ ^rocky- ]]; then
+if [[ "${NAME}" =~ ^sun- ]]; then
     AARGS='--import-branch-prefix=r --rpm-prefix=https://gitlab.com/morales-research-corporation/SunOS-Linux/srpms'
 fi
 
