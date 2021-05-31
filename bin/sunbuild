@@ -77,7 +77,7 @@ set -e
 
 createrepo /usr/share/nginx/html/repo
 
-rpmbuild -bs --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "dist .el8" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
+rpmbuild -bs --nodeps --define "%_topdir ${HOME}/sun/rpms/${NAME}/${BRANCH}" --define "dist .el8.sol" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SPECS/*.spec
 
 mock -r "$TMPCFG" --resultdir="${HOME}/sun/builds/${NAME}/${BRANCH}" ${HOME}/sun/rpms/${NAME}/${BRANCH}/SRPMS/*.src.rpm --isolation=simple --cleanup-after ${MOCKARGS:-}
 
