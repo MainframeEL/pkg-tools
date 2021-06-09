@@ -1,0 +1,30 @@
+#!/bin/sh
+
+NAME="$1"
+
+set -e
+
+if [ -z "${NAME}" ]; then
+    echo "usage: melget NAME"
+    exit 1
+fi
+
+if [[ "${NAME}" =~ ^mel- ]]; then
+    AARGS='--import-branch-prefix=r --rpm-prefix=https://gitlab.com/morales-research-corporation/mainframe-os/srpm'
+fi
+
+if [ -d "${HOME}/mel/patch/${NAME}.git" ]; then
+    echo "NOTICE: Will merge local configs into pulled package"
+    ( cd "${HOME}/mel/patch/${NAME}.git"; git add .; git commit -m "update" ) ||:
+fi
+
+test -d "$HOME/mel/rpms/${NAME}" && rm -rf "$HOME/mel/rpms/${NAME}"
+test -d /tmp/srpmproc-cache || mkdir /tmp/srpmproc-cache
+mkdir -p "$HOME/mel/rpms/${NAME}"
+
+srpmproc --version 8 --upstream-prefix "file://$HOME/mel" --storage-addr file:///tmp/srpmproc-cache --source-rpm "$NAME" --tmpfs-mode "$HOME/mel/rpms/${NAME}" ${AARGS}
+
+echo "Package has been pulled to: $HOME/mel/rpms/${NAME}"
+echo
+echo "The following branches are available:"
+( cd $HOME/mel/rpms/${NAME}; ls -1 )
